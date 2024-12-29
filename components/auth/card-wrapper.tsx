@@ -31,7 +31,6 @@ export const CardWrapper = ({
 					<Social />
 				</CardContent>
 			)}
-			
 			<CardFooter>
 				<BackButton label={backButtonLabel} href={backButtonHref} />
 			</CardFooter>
