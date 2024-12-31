@@ -36,6 +36,7 @@ export const {
 	},
 	callbacks: {
 		async signIn({ user, account }) {
+			//console.log("sign in callback", user, account); //also we can use type instead of provider check the console log
 			if (account?.provider !== "credentials") return true; //Allow OAuth without email verification
 
 			if (!user.id) return false;
