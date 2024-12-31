@@ -44,6 +44,15 @@ model Account {
   @@map("accounts")
 }
 
+model verificationToken {
+	id        String   @id @default(cuid())
+	email		  String
+	token     String   @unique
+	expiresAt DateTime
+
+	@@unique([email, token])
+}
+
 enum UserRole {
 	USER
 	ADMIN
