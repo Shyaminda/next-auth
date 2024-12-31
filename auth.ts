@@ -22,6 +22,18 @@ export const {
 	signIn,
 	signOut,
 } = NextAuth({
+	pages: {
+		signIn: "/auth/login", //this is the path to the login page always
+		error: "/auth/error", //this is the path to the error page always
+	},
+	events: {
+		async linkAccount({ user }) {
+			await db.user.update({
+				where: { id: user.id },
+				data: { emailVerified: new Date() }, //users who login with google or github will have their email verified already so we can set emailVerified to current date no need verify the email again
+			});
+		},
+	},
 	callbacks: {
 		async session({ session, token }) {
 			if (token.sub && session.user) {
