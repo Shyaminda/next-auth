@@ -59,7 +59,7 @@ export const {
 			//session.user.customField = "custom value"
 
 			if (token.role && session.user) {
-				//@ts-expect-error //this is a next auth issue
+				//this is a next auth issue if any error occurs here
 				session.user.role = token.role as UserRole;
 			}
 
