@@ -3,19 +3,8 @@ import authConfig from "@/auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
-import { type DefaultSession } from "next-auth";
 import { UserRole } from "@prisma/client";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
-
-export type ExtendedUser = DefaultSession["user"] & {
-	role: UserRole;
-	customField: string; //if we want to add custom fields to user object
-};
-declare module "@auth/core" {
-	interface Session {
-		user: ExtendedUser;
-	}
-}
 
 export const {
 	handlers: { GET, POST },
@@ -73,6 +62,12 @@ export const {
 				//@ts-expect-error //this is a next auth issue
 				session.user.role = token.role as UserRole;
 			}
+
+			if (session.user) {
+				//@ts-expect-error //this is a next auth issue
+				session.user.isTwoFactorAuthEnabled =
+					token.isTwoFactorAuthEnabled as boolean;
+			}
 			return session;
 		},
 		async jwt({ token }) {
@@ -83,6 +78,7 @@ export const {
 			if (!existingUser) return token;
 
 			token.role = existingUser.role;
+			token.isTwoFactorAuthEnabled = existingUser.isTwoFactorAuthEnabled;
 
 			return token;
 		},
