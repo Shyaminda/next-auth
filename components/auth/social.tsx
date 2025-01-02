@@ -5,11 +5,15 @@ import { Button } from "../ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 export const Social = () => {
+	const searchparams = useSearchParams();
+	const callbackUrl = searchparams.get("callbackUrl");
+
 	const onClick = (provider: "google" | "github") => {
 		signIn(provider, {
-			callbackUrl: DEFAULT_LOGIN_REDIRECT,
+			callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT,
 		});
 	};
 	return (

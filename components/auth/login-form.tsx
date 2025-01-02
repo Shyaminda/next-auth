@@ -25,6 +25,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export const LoginForm = () => {
 	const searchparams = useSearchParams();
+	const callbackUrl = searchparams.get("callbackUrl");
 	const urlError =
 		searchparams.get("error") === "OAuthAccountNotLinked"
 			? "Email in use with different provider!"
@@ -49,7 +50,7 @@ export const LoginForm = () => {
 		setSuccess("");
 
 		startTransition(() => {
-			login(values)
+			login(values, callbackUrl)
 				.then((data) => {
 					if (data?.error) {
 						form.reset();

@@ -27,8 +27,7 @@ export default function Home() {
 					A better way to handle authentication in Next.js
 				</p>
 				<div>
-					<LoginButton>
-						{" "}
+					<LoginButton mode="modal" asChild>
 						{/* this login button component make anything a button */}
 						<Button variant="secondary" size="lg">
 							Sign in
