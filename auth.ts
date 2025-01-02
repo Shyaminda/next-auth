@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
 import { UserRole } from "@prisma/client";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
+import { getAccountByUserId } from "./data/account";
 
 export const {
 	handlers: { GET, POST },
@@ -67,6 +68,15 @@ export const {
 				//@ts-expect-error //this is a next auth issue
 				session.user.isTwoFactorAuthEnabled =
 					token.isTwoFactorAuthEnabled as boolean;
+				//@ts-expect-error //this is a next auth issue
+				session.user.isOAuth = token.isOAuth as boolean;
+			}
+
+			if (session.user) {
+				session.user.name = token.name;
+				session.user.email = token.email || "";
+				//@ts-expect-error //this is a next auth issue
+				session.user.isOAuth = token.isOAuth as boolean;
 			}
 			return session;
 		},
@@ -76,6 +86,12 @@ export const {
 			const existingUser = await getUserById(token.sub);
 
 			if (!existingUser) return token;
+
+			const existingAccount = await getAccountByUserId(existingUser.id);
+			token.isOAuth = !!existingAccount;
+
+			token.name = existingUser.name;
+			token.email = existingUser.email;
 
 			token.role = existingUser.role;
 			token.isTwoFactorAuthEnabled = existingUser.isTwoFactorAuthEnabled;

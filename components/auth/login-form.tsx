@@ -21,6 +21,7 @@ import { login } from "@/actions/login";
 import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export const LoginForm = () => {
 	const searchparams = useSearchParams();
@@ -65,7 +66,16 @@ export const LoginForm = () => {
 					}
 				})
 				//.catch((error) => console.log(error.message)); //when console logged a error of NEXT_REDIRECT
-				.catch(() => setError("An error occurred!"));
+				//.catch(() => setError("An error occurred!"));
+				.catch((error) => {
+					console.error(error);
+					if (isRedirectError(error)) {
+						//NEXT_REDIRECT error is handled here
+						console.log("Handled redirect error");
+					} else {
+						setError("An error occurred!");
+					}
+				});
 		});
 	};
 
